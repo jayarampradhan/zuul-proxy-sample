@@ -1,0 +1,29 @@
+version: '1'
+services:
+
+	proxy01:
+		image: nginx:latest
+		working_dir: /app
+		volumes:
+			- "./nginx/:/etc/nginx/conf.d"
+		container_name: web1
+		ports:
+			- "80:80"
+		depends_on:
+			- app01
+		links:
+			- app01:rest_app_1
+		restart: always
+
+	app01:
+		image: java:openjdk-8u91-jdk
+		working_dir: /app
+		volumes:
+			- "./:/app"
+		command: java -jar /app/api.jar
+		container_name: rest_app_1
+		ports:
+			- "8080:8080"
+		environment:
+			- JAVA_OPTS=""
+		restart: always
