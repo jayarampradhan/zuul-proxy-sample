@@ -110,6 +110,9 @@ project("proxy") {
         // https://mvnrepository.com/artifact/org.hibernate.javax.persistence/hibernate-jpa-2.1-api
 //        optional ("org.hibernate.javax.persistence:hibernate-jpa-2.1-api:${hibernateJpaVersion}")
     }
+    bootRepackage {
+        mainClass = 'com.uimirror.poc.zull.proxy.StartApp'
+    }
     dependencyManagement {
         imports {
             mavenBom "org.springframework.cloud:spring-cloud-dependencies:Brixton.SR5"

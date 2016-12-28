@@ -1,56 +1,56 @@
-version: '1'
+version: '2'
 services:
 
-	proxy01:
-		image: nginx:latest
-		working_dir: /app
-		volumes:
-			- "./nginx/:/etc/nginx/conf.d"
-		container_name: web1
-		ports:
-			- "80:80"
-		depends_on:
-			- app01
-		links:
-			- app01:rest_app_1
-		restart: always
+  proxy01:
+    image: nginx:latest
+    working_dir: /app
+    volumes:
+      - "./nginx:/etc/nginx/conf.d"
+    container_name: web1
+    ports:
+      - "80:80"
+    depends_on:
+      - app01
+    links:
+      - app01:api_app
+    restart: always
 
-	app01:
-		image: java:openjdk-8u91-jdk
-		working_dir: /app
-		volumes:
-			- "./:/app"
-		command: java -Dcurrent.pod=8 -jar /app/api.jar
-		container_name: rest_app_1
-		ports:
-			- "8080:8080"
-		environment:
-			- JAVA_OPTS=""
-		restart: always
+  app01:
+    image: java:openjdk-8u91-jdk
+    working_dir: /app
+    volumes:
+      - "./:/app"
+    command: java -Dcurrent.pod=8 -jar /app/proxy-api.jar
+    container_name: rest_app_1
+    ports:
+      - "8080:8080"
+    environment:
+      - JAVA_OPTS=""
+    restart: always
 
-	proxy02:
-		image: nginx:latest
-		working_dir: /app
-		volumes:
-			- "./nginx/:/etc/nginx/conf.d"
-		container_name: web2
-		ports:
-			- "80:81"
-		depends_on:
-			- app02
-		links:
-			- app02:rest_app_2
-		restart: always	
+  proxy02:
+    image: nginx:latest
+    working_dir: /app
+    volumes:
+      - "./nginx:/etc/nginx/conf.d"
+    container_name: web2
+    ports:
+      - "81:80"
+    depends_on:
+      - app02
+    links:
+      - app02:api_app
+    restart: always
 
-	app02:
-		image: java:openjdk-8u91-jdk
-		working_dir: /app
-		volumes:
-			- "./:/app"
-		command: java -Dcurrent.pod=9 -jar /app/api.jar
-		container_name: rest_app_2
-		ports:
-			- "8080:8181"
-		environment:
-			- JAVA_OPTS=""
-		restart: always	
+  app02:
+    image: java:openjdk-8u91-jdk
+    working_dir: /app
+    volumes:
+      - "./:/app"
+    command: java -Dcurrent.pod=9 -jar /app/proxy-api.jar
+    container_name: rest_app_2
+    ports:
+      - "8181:8080"
+    environment:
+      - JAVA_OPTS=""
+    restart: always
