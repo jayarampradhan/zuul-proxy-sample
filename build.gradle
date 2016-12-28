@@ -32,7 +32,6 @@ configure(allprojects) { project ->
     apply plugin: "propdeps"
     apply plugin: "java"
     apply plugin: "idea"
-//    apply plugin: "org.springframework.boot"
 
     configurations {
         sniffer
@@ -101,6 +100,8 @@ configure(allprojects) { project ->
 
 project("proxy") {
     description = "Zull Proxy using spring cloud"
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: "org.springframework.boot"
     dependencies {
         testCompile ("org.springframework:spring-test:${springVersion}")
         testCompile ("org.springframework:spring-expression:${springVersion}")
@@ -109,14 +110,23 @@ project("proxy") {
         // https://mvnrepository.com/artifact/org.hibernate.javax.persistence/hibernate-jpa-2.1-api
 //        optional ("org.hibernate.javax.persistence:hibernate-jpa-2.1-api:${hibernateJpaVersion}")
     }
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:Brixton.SR5"
+        }
+    }
 }
 
 project("proxy-api") {
+    apply plugin: "org.springframework.boot"
     description = "Proxy rest api"
     dependencies {
         testCompile ("org.springframework:spring-test:${springVersion}")
         testCompile ("org.springframework:spring-expression:${springVersion}")
         compile ("org.springframework.boot:spring-boot-starter-jersey:${springBootVersion}")
+    }
+    bootRepackage {
+        mainClass = 'com.uimirror.poc.zull.api.StartApp'
     }
 }
 
