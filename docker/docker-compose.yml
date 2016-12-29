@@ -1,56 +1,159 @@
 version: '2'
 services:
 
-  proxy01:
+  #Pod 8 Proxy 1
+  proxy08_00:
     image: nginx:latest
     working_dir: /app
     volumes:
       - "./nginx:/etc/nginx/conf.d"
-    container_name: web1
+    container_name: web_pod_8_1
     ports:
       - "80:80"
     depends_on:
-      - app01
+      - app08_0
     links:
-      - app01:api_app
+      - app08_0:api_app
     restart: always
 
-  app01:
+  #Pod 8 app 1
+  app08_0:
     image: java:openjdk-8u91-jdk
     working_dir: /app
     volumes:
       - "./:/app"
-    command: java -Dcurrent.pod=8 -jar /app/proxy-api.jar
-    container_name: rest_app_1
+    command: java -Dcurrent.pod=8 -Dcurrent.pod.sub=1 -jar /app/proxy-api.jar
+    container_name: rest_app_pod8_1
     ports:
       - "8080:8080"
     environment:
       - JAVA_OPTS=""
     restart: always
 
-  proxy02:
+  #Pod 8 Proxy 2
+  proxy08_01:
     image: nginx:latest
     working_dir: /app
     volumes:
       - "./nginx:/etc/nginx/conf.d"
-    container_name: web2
+    container_name: web_pod_8_2
     ports:
       - "81:80"
     depends_on:
-      - app02
+      - app08_1
     links:
-      - app02:api_app
+      - app08_1:api_app
     restart: always
 
-  app02:
+  #Pod 8 app 2
+  app08_1:
     image: java:openjdk-8u91-jdk
     working_dir: /app
     volumes:
       - "./:/app"
-    command: java -Dcurrent.pod=9 -jar /app/proxy-api.jar
-    container_name: rest_app_2
+    command: java -Dcurrent.pod=8 -Dcurrent.pod.sub=2 -jar /app/proxy-api.jar
+    container_name: rest_app_pod8_2
     ports:
-      - "8181:8080"
+      - "8081:8080"
     environment:
       - JAVA_OPTS=""
     restart: always
+
+
+  #Pod 8 Proxy 3 Bad Proxy
+  proxy08_00_bad:
+    image: nginx:latest
+    working_dir: /app
+    volumes:
+      - "./nginx:/etc/nginx/conf.d"
+    container_name: web_pod_8_3_I_am_bad
+    ports:
+      - "82:80"
+    restart: always
+
+  #Pod 9 proxy 1
+  proxy09_0:
+    image: nginx:latest
+    working_dir: /app
+    volumes:
+      - "./nginx:/etc/nginx/conf.d"
+    container_name: web_pod_9_1
+    ports:
+      - "83:80"
+    depends_on:
+      - app09_00
+    links:
+      - app09_00:api_app
+    restart: always
+
+  #Pod 9 app 1
+  app09_00:
+    image: java:openjdk-8u91-jdk
+    working_dir: /app
+    volumes:
+      - "./:/app"
+    command: java -Dcurrent.pod=9 -Dcurrent.pod.sub=1 -jar /app/proxy-api.jar
+    container_name: rest_app_9_1
+    ports:
+      - "8082:8080"
+    environment:
+      - JAVA_OPTS=""
+    restart: always
+
+  #Pod 9 proxy 2
+  proxy09_1:
+    image: nginx:latest
+    working_dir: /app
+    volumes:
+      - "./nginx:/etc/nginx/conf.d"
+    container_name: web_pod_9_2
+    ports:
+      - "84:80"
+    depends_on:
+      - app09_01
+    links:
+      - app09_01:api_app
+    restart: always
+
+  #Pod 9 app 2
+  app09_01:
+    image: java:openjdk-8u91-jdk
+    working_dir: /app
+    volumes:
+      - "./:/app"
+    command: java -Dcurrent.pod=9 -Dcurrent.pod.sub=2 -jar /app/proxy-api.jar
+    container_name: rest_app_9_2
+    ports:
+      - "8083:8080"
+    environment:
+      - JAVA_OPTS=""
+    restart: always
+
+  #Pod 9 proxy bad proxy
+  proxy09_00_bad:
+    image: nginx:latest
+    working_dir: /app
+    volumes:
+      - "./nginx:/etc/nginx/conf.d"
+    container_name: web_pod_9_3_I_am_bad
+    ports:
+      - "85:80"
+#    depends_on:
+#      - app09_02
+#    links:
+#      - app09_02:api_app
+    restart: always
+
+  #Pod 9 app 3
+#  app09_02:
+#    image: java:openjdk-8u91-jdk
+#    working_dir: /app
+#    volumes:
+#      - "./:/app"
+#    command: java -Dcurrent.pod=9 -Dcurrent.pod.sub=3 -jar /app/proxy-api.jar
+#    container_name: rest_app_9_3
+#    ports:
+#      - "8084:8080"
+#    environment:
+#      - JAVA_OPTS=""
+#    restart: always

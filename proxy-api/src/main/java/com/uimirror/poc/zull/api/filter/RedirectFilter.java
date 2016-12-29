@@ -15,23 +15,28 @@
  * Uimirror Team
  *******************************************************************************/
 
-package com.uimirror.poc.zull.api;
+package com.uimirror.poc.zull.api.filter;
 
-import com.uimirror.poc.zull.api.filter.RedirectFilter;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
-import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.core.Response;
+import java.io.IOException;
 
 /**
- * Created by Jay on 27/12/16.
+ * Created by Jay on 30/12/16.
  */
-@ApplicationPath("/api/v1")
-@Component
-public class SampleJerseyApplication extends ResourceConfig{
+public class RedirectFilter implements ContainerRequestFilter {
 
-    public SampleJerseyApplication(){
-        register(Endpoint.class);
-        register(RedirectFilter.class);
+
+    @Override
+    public void filter (ContainerRequestContext rq) throws IOException {
+        final String redirectTo = rq.getHeaderString("redirectTo");
+        if( StringUtils.hasText(redirectTo) && rq.getHeaderString("X-redirected-by") == null){
+            rq.abortWith(Response.status(302).cookie(new NewCookie("routePn", redirectTo))
+                    .header("redirectTo",redirectTo).build());
+        }
     }
 }

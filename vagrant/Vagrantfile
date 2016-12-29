@@ -30,6 +30,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       s1.vm.network "private_network", type: "dhcp"
       s1.vm.network :forwarded_port, guest: 80, host: 8080
       s1.vm.network :forwarded_port, guest: 81, host: 8081
+      s1.vm.network :forwarded_port, guest: 82, host: 8082
+      s1.vm.network :forwarded_port, guest: 83, host: 8083
+      s1.vm.network :forwarded_port, guest: 84, host: 8084
+      s1.vm.network :forwarded_port, guest: 85, host: 8085
       s1.vm.synced_folder "../", "/dev/workspace"
       s1.vm.synced_folder ".", "/vagrant", disabled: true
       s1.vm.provider "virtualbox" do |vb|

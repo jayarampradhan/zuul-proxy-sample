@@ -46,11 +46,16 @@ public class Endpoint {
     @Value("${current.pod:-1}")
     private String podNumber;
 
+    @Value("${current.pod.sub:-1}")
+    private String podSubNumber;
+
     @GET
     public Map<String, String> sayHello(){
         LOG.info("[START]- starting to say hello.");
         Map<String, String> rs = new HashMap<>();
         rs.put("pod", podNumber);
+        rs.put("podSubNumber", podSubNumber);
+        LOG.info("Served request from pod={} and subPod={}",podNumber, podSubNumber);
         return rs;
     }
 }

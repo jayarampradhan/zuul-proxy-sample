@@ -1,0 +1,65 @@
+zuul:
+#  ignoredServices: *
+  routes:
+
+    pod8:
+      path: /v1/**
+      serviceId: pod8
+      stripPrefix: false
+
+    pod9:
+      path: /v1/**
+      serviceId: pod9
+      stripPrefix: false
+
+    podany:
+      path: /v1/**
+      serviceId: podany
+      stripPrefix: false
+
+ribbon:
+  ConnectTimeout: 30000
+  ReadTimeout: 990000
+  maxAutoRetries: 0 #don't want to retry on the same server
+  MaxAutoRetriesNextServer: 2
+  OkToRetryOnAllOperations: true
+  eureka:
+    enabled: true
+
+pod8:
+  ribbon:
+    retryable: true
+    listOfServers: http://localhost:8080/v1,http://localhost:8081/v1,http://localhost:8082/v1
+
+pod9:
+  ribbon:
+    retryable: true
+    listOfServers: http://localhost:8083/v1,http://localhost:8084/v1,http://localhost:8085/v1
+
+podany:
+  ribbon:
+    retryable: true
+    listOfServers: http://localhost:8080/v1,http://localhost:8081/v1,http://localhost:8082/v1,http://localhost:8083/v1,http://localhost:8084/v1,http://localhost:8085/v1
+
+
+
+hystrix:
+  command:
+    pod8:
+      execution:
+        isolation:
+          strategy: THREAD
+          thread:
+            timeoutInMilliseconds: 100000
+    pod9:
+      execution:
+        isolation:
+          strategy: THREAD
+          thread:
+            timeoutInMilliseconds: 100000
+    podany:
+      execution:
+        isolation:
+          strategy: THREAD
+          thread:
+            timeoutInMilliseconds: 100000
