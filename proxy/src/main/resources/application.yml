@@ -1,7 +1,10 @@
+server:
+  port: 8080
 zuul:
 #  ignoredServices: *
+  prefix: /api
+  stripPrefix: false
   routes:
-
     pod8:
       path: /v1/**
       serviceId: pod8
@@ -22,6 +25,8 @@ ribbon:
   ReadTimeout: 990000
   maxAutoRetries: 0 #don't want to retry on the same server
   MaxAutoRetriesNextServer: 2
+  okhttp:
+    enabled: true
   OkToRetryOnAllOperations: true
   eureka:
     enabled: true
@@ -29,17 +34,17 @@ ribbon:
 pod8:
   ribbon:
     retryable: true
-    listOfServers: http://localhost:8080/v1,http://localhost:8081/v1,http://localhost:8082/v1
+    listOfServers: http://api_app_08_00,http://api_app_08_01,http://api_app_08_02
 
 pod9:
   ribbon:
     retryable: true
-    listOfServers: http://localhost:8083/v1,http://localhost:8084/v1,http://localhost:8085/v1
+    listOfServers: http://api_app_09_00,http://api_app_09_01,http://api_app_09_02
 
 podany:
   ribbon:
     retryable: true
-    listOfServers: http://localhost:8080/v1,http://localhost:8081/v1,http://localhost:8082/v1,http://localhost:8083/v1,http://localhost:8084/v1,http://localhost:8085/v1
+    listOfServers: http://api_app_08_00,http://api_app_08_01,http://api_app_08_02,http://api_app_09_00,http://api_app_09_01,http://api_app_09_02
 
 
 

@@ -157,3 +157,47 @@ services:
 #    environment:
 #      - JAVA_OPTS=""
 #    restart: always
+
+  #Pod 0 Proxy
+  proxy_00:
+    image: java:openjdk-8u91-jdk
+    working_dir: /app
+    volumes:
+      - "./:/app"
+    command: java -jar /app/proxy.jar
+    container_name: proxy_app
+    ports:
+      - "8085:8080"
+    environment:
+      - JAVA_OPTS=""
+    restart: always
+    depends_on:
+      - proxy08_00
+      - proxy08_01
+      - proxy08_00_bad
+      - proxy09_0
+      - proxy09_1
+      - proxy09_00_bad
+    links:
+      - proxy08_00:api_app_08_00
+      - proxy08_01:api_app_08_01
+      - proxy08_00_bad:api_app_08_02
+      - proxy09_0:api_app_09_00
+      - proxy09_1:api_app_09_01
+      - proxy09_00_bad:api_app_09_02
+
+
+  #Pod 8 Proxy 1
+  application_00:
+    image: nginx:latest
+    working_dir: /app
+    volumes:
+      - "./nginx:/etc/nginx/conf.d"
+    container_name: application
+    ports:
+      - "86:80"
+    depends_on:
+      - proxy_00
+    links:
+      - proxy_00:api_app
+    restart: always

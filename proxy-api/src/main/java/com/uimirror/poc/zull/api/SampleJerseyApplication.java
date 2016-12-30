@@ -17,7 +17,7 @@
 
 package com.uimirror.poc.zull.api;
 
-import com.uimirror.poc.zull.api.filter.RedirectFilter;
+import com.uimirror.poc.zull.api.filter.Request301RedirectFilter;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +32,6 @@ public class SampleJerseyApplication extends ResourceConfig{
 
     public SampleJerseyApplication(){
         register(Endpoint.class);
-        register(RedirectFilter.class);
+        register(Request301RedirectFilter.class);
     }
 }

@@ -18,44 +18,44 @@
 package com.uimirror.poc.zull.proxy.filter;
 
 import com.netflix.zuul.context.RequestContext;
+import org.springframework.cloud.netflix.ribbon.support.RibbonRequestCustomizer;
 import org.springframework.cloud.netflix.zuul.filters.ProxyRequestHelper;
 import org.springframework.cloud.netflix.zuul.filters.route.RibbonCommandFactory;
 import org.springframework.cloud.netflix.zuul.filters.route.RibbonRoutingFilter;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.util.StringUtils;
+
+import java.util.List;
+
+import static com.uimirror.poc.zull.proxy.common.CommonUtils.X_REDIRECT_BY;
+import static com.uimirror.poc.zull.proxy.common.CommonUtils.X_REDIRECT_TO;
+import static com.uimirror.poc.zull.proxy.common.CommonUtils.getRouteServiceId;
 
 /**
  * Created by Jay on 29/12/16.
  */
-public class PreRobinRouteFilter extends RibbonRoutingFilter {
+public class RobinRoute301RedirectFilter extends RibbonRoutingFilter {
 
-    public PreRobinRouteFilter(ProxyRequestHelper helper,
-                               RibbonCommandFactory<?> ribbonCommandFactory) {
-        super(helper, ribbonCommandFactory);
-    }
-
-    public PreRobinRouteFilter(RibbonCommandFactory<?> ribbonCommandFactory) {
-        this(new ProxyRequestHelper(), ribbonCommandFactory);
+    public RobinRoute301RedirectFilter (ProxyRequestHelper helper, RibbonCommandFactory<?> ribbonCommandFactory
+            , List<RibbonRequestCustomizer> requestCustomizers) {
+        super(helper, ribbonCommandFactory, requestCustomizers);
     }
 
     @Override
     public Object run () {
-        final ClientHttpResponse run = (ClientHttpResponse) super.run();
-        if(run != null){
+
+        final ClientHttpResponse lastResponse = (ClientHttpResponse) super.run();
+
+        if(lastResponse != null){
             final int status = RequestContext.getCurrentContext().getResponse().getStatus();
-            if(status == 302){
-                final String routePn = run.getHeaders().get("redirectTo").get(0);
-                String routeId="pod";
-                if( StringUtils.hasText(routePn)){
-                    routeId += routePn;
-                }
+            if(status == 301) {
+                final String routePn = lastResponse.getHeaders().get(X_REDIRECT_TO).get(0);
                 RequestContext ctx = RequestContext.getCurrentContext();
                 ctx.setRouteHost(null);
-                ctx.addZuulRequestHeader("X-redirected-by", ctx.getRequest().getHeader("redirectTo"));
-                RequestContext.getCurrentContext().set("serviceId",routeId);
+                ctx.addZuulRequestHeader(X_REDIRECT_BY, (String) ctx.get("serviceId"));
+                ctx.set("serviceId", getRouteServiceId(routePn));
                 return super.run();
-            }else
-                return run;
+            } else
+                return lastResponse;
         }
         return null;
     }

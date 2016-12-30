@@ -4,6 +4,7 @@
     <include resource="org/springframework/boot/logging/logback/base.xml" />
 
     <logger name="com.uimirror.poc.zull.proxy" level="DEBUG" />
+    <logger name="org.springframework.cloud" level="INFO" />
 
     <springProfile name="staging">
         <logger name="com.uimirror.poc.zull.proxy" level="TRACE" />

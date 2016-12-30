@@ -15,45 +15,27 @@
  * Uimirror Team
  *******************************************************************************/
 
-package com.uimirror.poc.zull.proxy.filter;
+package com.uimirror.poc.zull.proxy.common;
 
-import com.netflix.zuul.ZuulFilter;
-import com.netflix.zuul.context.RequestContext;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 /**
- * Created by Jay on 29/12/16.
+ * Created by Jay on 30/12/16.
  */
-@Component
-public class RouteFilter extends ZuulFilter {
+public class CommonUtils {
 
-    @Override
-    public String filterType () {
-        return "pre";
+    private CommonUtils (){
+        //NOP
     }
 
-    @Override
-    public int filterOrder () {
-        return 1;
-    }
+    public static final String ROUTE_ID_HEADER_KEY = "X-Route-Id";
+    public static final String X_REDIRECT_TO = "X-Redirect-To";
+    public static final String X_REDIRECT_BY = "X-Redirect-By";
 
-    @Override
-    public boolean shouldFilter () {
-        return Boolean.TRUE;
-    }
-
-    @Override
-    public Object run () {
-        final String routePn = RequestContext.getCurrentContext().getRequest().getHeader("routePn");
+    public static String getRouteServiceId(String routePn){
         String routeId="pod";
-        if(StringUtils.hasText(routePn)){
-            routeId += routePn;
-        }
-        RequestContext ctx = RequestContext.getCurrentContext();
-        ctx.setRouteHost(null);
-        ctx.set("serviceId",routeId);
-        return null;
+        routeId += StringUtils.hasText(routePn) ? routePn : "any";
+        return routeId;
     }
 
 }
