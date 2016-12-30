@@ -9,7 +9,7 @@ buildscript {
 }
 
 configure(allprojects) { project ->
-    group = "com.uimirror.poc.zull"
+    group = "com.uimirror.poc.zuul"
     version = qualifyVersionIfNecessary(version)
     ext.appName                     = name
     ext.junitVersion                = "4.12"

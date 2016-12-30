@@ -1,4 +1,4 @@
-rootProject.name = 'zull-proxy'
+rootProject.name = 'zuul-proxy'
 
 include 'proxy'
 include 'proxy-api'
